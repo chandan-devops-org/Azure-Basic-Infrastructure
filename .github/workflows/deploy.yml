@@ -1,0 +1,30 @@
+name: Test OIDC and Secrets
+
+on:
+  push:
+    branches: [ "**" ] # This triggers on ALL branches so you can test right now!
+
+permissions:
+  id-token: write # Mandatory for Azure OIDC
+  contents: read
+
+jobs:
+  test-secrets:
+    runs-on: ubuntu-latest
+    environment: learning # Matches your repository environment name
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Connect to Azure via OIDC
+      uses: azure/login@v3 # Upgraded version to support Node 24 runners
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: Verify Account Access
+      run: |
+        echo "Authentication Successful!"
+        az account show
