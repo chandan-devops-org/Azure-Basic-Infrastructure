@@ -1,1 +1,1 @@
-# Azure-Basic-Infrastructure
+Basic azurerm resources creation examples
