@@ -46,3 +46,4 @@ jobs:
     - name: Verify Account Access
       run: |
         az account show
+# wake up runner
