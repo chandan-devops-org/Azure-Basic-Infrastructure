@@ -3,7 +3,7 @@ name: Test OIDC and Validate Terraform
 on:
   push:
     branches:
-      - 'feature/*' # Scoped strictly to your automated feature branch runs
+      - 'feature/azure-test' # Scoped strictly to your automated feature branch runs
 
 permissions:
   id-token: write # Mandated by Azure OIDC
