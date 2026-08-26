@@ -43,7 +43,6 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    - name: Verify Account Access
-      run: |
-        az account show
-# wake up runner
+    # 🚀 NEW STEP: Generates a detailed preview of your cloud changes
+    - name: Terraform Plan
+      run: terraform plan
