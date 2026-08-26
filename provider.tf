@@ -5,12 +5,12 @@ terraform {
       version = "=5.0.0"
     }
   }
-#     backend "azurerm" {
-#     resource_group_name  = "Chandan-Storage-RG"
-#     storage_account_name = "bckndstrgaccount"
-#     container_name       = "tfstate-container"
-#     key                  = "terraform.tfstate"
-#   }
+  #     backend "azurerm" {
+  #     resource_group_name  = "Chandan-Storage-RG"
+  #     storage_account_name = "bckndstrgaccount"
+  #     container_name       = "tfstate-container"
+  #     key                  = "terraform.tfstate"
+  #   }
 }
 
 # Configure the Microsoft Azure Provider
