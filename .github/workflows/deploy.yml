@@ -1,25 +1,43 @@
-name: Test OIDC and Secrets
+name: Test OIDC and Validate Terraform
 
 on:
   push:
     branches:
-      - 'feature/*' # ⬅️ This triggers ONLY when you push code to branches starting with feature/
+      - 'feature/*' # Scoped strictly to your automated feature branch runs
 
 permissions:
-  id-token: write # Mandatory for Azure OIDC
+  id-token: write # Mandated by Azure OIDC
   contents: read
 
 jobs:
-  test-secrets:
+  validate-and-test:
     runs-on: ubuntu-latest
-    environment: learning # Matches your repository environment name
+    environment: learning # Maps to your repository environment
     
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
 
+    # New Step: Installs the secure Terraform CLI runtime environment on the runner engine
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.9.0" # Clean, locked standard production version
+
+    # New Step: Validates formatting syntax spaces across your new .tf files
+    - name: Terraform Format Check
+      run: terraform fmt -check
+
+    # New Step: Initializes providers locally inside the virtual workspace
+    - name: Terraform Init
+      run: terraform init -backend=false # Sets false to bypass cloud storage checks during local feature testing
+
+    # New Step: Executes a complete code integrity validation scan
+    - name: Terraform Validate
+      run: terraform validate
+
     - name: Connect to Azure via OIDC
-      uses: azure/login@v3 # Upgraded version to support Node 24 runners
+      uses: azure/login@v3
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -27,5 +45,4 @@ jobs:
 
     - name: Verify Account Access
       run: |
-        echo "Authentication Successful!"
         az account show
