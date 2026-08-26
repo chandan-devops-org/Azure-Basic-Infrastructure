@@ -2,7 +2,8 @@ name: Test OIDC and Secrets
 
 on:
   push:
-    branches: [ "**" ] # This triggers on ALL branches so you can test right now!
+    branches:
+      - 'feature/*' # ⬅️ This triggers ONLY when you push code to branches starting with feature/
 
 permissions:
   id-token: write # Mandatory for Azure OIDC
