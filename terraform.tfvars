@@ -1,5 +1,5 @@
 RGs = {
-  rg-prod = {
+  rg-prod-GIT = {
     location                             = "indiasouthcentral"
     vnet_name                            = "prod-vnet"
     vnet_address_space                   = ["10.0.0.0/16"]
@@ -10,7 +10,7 @@ RGs = {
     vm_username                          = "azureuser"
     vm_password                          = "Chandan@123456"
   }
-  rg-stag = {
+  rg-stag-GIT = {
     location                             = "MalaysiaWest"
     vnet_name                            = "stag-vnet"
     vnet_address_space                   = ["10.0.0.0/16"]
