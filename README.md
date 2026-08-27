@@ -1,1 +1,1 @@
-Basic azurerm resources creation examples
+Terraform CI/CD Learning Project
