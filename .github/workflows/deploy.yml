@@ -7,7 +7,7 @@ on:
   
   pull_request:
     branches:
-      - main 
+      - main
 
 permissions:
   id-token: write # Mandated by Azure OIDC
