@@ -1,0 +1,76 @@
+name: Terraform CI
+
+on:
+  push:
+    branches:
+      - 'feature/azure-test' # Scoped strictly to your automated feature branch runs
+  
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  id-token: write # Mandated by Azure OIDC
+  contents: read
+
+jobs:
+  terraform-ci:
+    runs-on: ubuntu-latest
+    environment: learning # Maps to your repository environment
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # New Step: Installs the secure Terraform CLI runtime environment on the runner engine
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.15.8" # Clean, locked standard production version
+
+    # New Step: Validates formatting syntax spaces across your new .tf files
+    - name: Terraform Format Check
+      run: terraform fmt -check -recursive
+
+    # New Step: Initializes providers locally inside the virtual workspace
+    - name: Terraform Init
+      run: terraform init -backend=false # Sets false to bypass cloud storage checks during local feature testing
+
+    # New Step: Executes a complete code integrity validation scan
+    - name: Terraform Validate
+      run: terraform validate
+    
+    # TFLint Setup
+    - name: Setup TFLint
+      uses: terraform-linters/setup-tflint@v4
+
+    # Download TFLint plugins
+    - name: TFLint Init
+      run: tflint --init
+
+    # Run TFLint
+    - name: TFLint
+      run: tflint
+
+    # Checkov Security Scan
+    - name: Checkov
+      uses: bridgecrewio/checkov-action@v12
+      with:
+        directory: .
+        framework: terraform
+
+  # ============================================================
+  # Step 4: GitHub OIDC Authentication
+  # ============================================================
+    - name: Connect to Azure via OIDC
+      uses: azure/login@v3
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  # ============================================================
+  # Step 5: Terraform Plan via Azure OIDC
+  # ============================================================
+    - name: Terraform Plan
+      run: terraform plan
