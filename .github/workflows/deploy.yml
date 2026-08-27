@@ -1,16 +1,20 @@
-name: Test OIDC and Validate Terraform
+name: Terraform CI
 
 on:
   push:
     branches:
       - 'feature/azure-test' # Scoped strictly to your automated feature branch runs
+  
+  pull_request:
+    branches:
+      - main
 
 permissions:
   id-token: write # Mandated by Azure OIDC
   contents: read
 
 jobs:
-  validate-and-test:
+  terraform-ci:
     runs-on: ubuntu-latest
     environment: learning # Maps to your repository environment
     
