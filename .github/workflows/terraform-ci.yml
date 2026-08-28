@@ -16,7 +16,7 @@ permissions:
 jobs:
   terraform-ci:
     runs-on: ubuntu-latest
-    environment: learning # Maps to your repository environment
+    environment: Integration # Maps to your repository environment
     
     steps:
     - name: Checkout Code
