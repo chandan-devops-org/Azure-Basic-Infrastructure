@@ -1,5 +1,5 @@
 RGs = {
-  rg-prod = {
+  rg-prod-GIT = {
     location                             = "indiasouthcentral"
     vnet_name                            = "prod-vnet"
     vnet_address_space                   = ["10.0.0.0/16"]

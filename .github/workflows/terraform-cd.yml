@@ -22,14 +22,14 @@ jobs:
     steps:
 
     # ------------------------------------------------------------
-    # Checkout
+    # Step 1: Checkout Code
     # ------------------------------------------------------------
     - name: Checkout Code
       uses: actions/checkout@v4
 
 
     # ------------------------------------------------------------
-    # Setup Terraform
+    # Step 2: Setup Terraform
     # ------------------------------------------------------------
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
@@ -38,21 +38,32 @@ jobs:
 
 
     # ------------------------------------------------------------
-    # Terraform Init
+    # Step 3: Azure OIDC Login
+    # ------------------------------------------------------------
+    - name: Connect to Azure via OIDC
+      uses: azure/login@v3
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+
+    # ------------------------------------------------------------
+    # Step 4: Terraform Init
     # ------------------------------------------------------------
     - name: Terraform Init
       run: terraform init -backend=false
 
 
     # ------------------------------------------------------------
-    # Terraform Plan
+    # Step 5: Terraform Plan
     # ------------------------------------------------------------
     - name: Terraform Plan
       run: terraform plan -out=tfplan
 
 
     # ------------------------------------------------------------
-    # Upload Terraform Plan
+    # Step 6: Upload Terraform Plan
     # ------------------------------------------------------------
     - name: Upload Terraform Plan
       uses: actions/upload-artifact@v4
@@ -71,20 +82,23 @@ jobs:
 
     needs: terraform-plan
 
-    # Environment protection
+    # ----------------------------------------------------------
+    # Deployment Protection
+    # ----------------------------------------------------------
+    # Second account approval is required here
     environment: Delivery
 
     steps:
 
     # ------------------------------------------------------------
-    # Checkout
+    # Step 1: Checkout Code
     # ------------------------------------------------------------
     - name: Checkout Code
       uses: actions/checkout@v4
 
 
     # ------------------------------------------------------------
-    # Setup Terraform
+    # Step 2: Setup Terraform
     # ------------------------------------------------------------
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
@@ -93,14 +107,14 @@ jobs:
 
 
     # ------------------------------------------------------------
-    # Terraform Init
+    # Step 3: Terraform Init
     # ------------------------------------------------------------
     - name: Terraform Init
       run: terraform init -backend=false
 
 
     # ------------------------------------------------------------
-    # Download Terraform Plan
+    # Step 4: Download Terraform Plan
     # ------------------------------------------------------------
     - name: Download Terraform Plan
       uses: actions/download-artifact@v4
@@ -109,7 +123,7 @@ jobs:
 
 
     # ------------------------------------------------------------
-    # Azure OIDC Login
+    # Step 5: Azure OIDC Login
     # ------------------------------------------------------------
     - name: Connect to Azure via OIDC
       uses: azure/login@v3
@@ -120,7 +134,7 @@ jobs:
 
 
     # ------------------------------------------------------------
-    # Terraform Apply
+    # Step 6: Terraform Apply
     # ------------------------------------------------------------
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
